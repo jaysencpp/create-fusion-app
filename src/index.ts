@@ -25,7 +25,7 @@ async function main() {
   finish(ctxWithInstallers);
 }
 
-main().catch((e) => {
+main().catch(() => {
   console.log("Something wernt wrong");
   process.exit(1);
 });
