@@ -3,10 +3,12 @@ const packages = {
   normal: {
     // navigation
     "@equinor/fusion-framework-module-navigation": "^2.1.2",
-    "@remix-run/router": "^1.0.4",
+    "@remix-run/router": "^1.6.2",
     "react-router-dom": "^6.4.3",
     // Context
-    "@equinor/fusion-framework-module-context": "^6.0.7",
+    "@equinor/fusion-framework-module-context": "^4.0.8",
+    //React query
+    "@tanstack/react-query": "^4.29.12",
   },
 };
 export type Pkgs = typeof packages;

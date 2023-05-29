@@ -42,9 +42,9 @@ const execFile = async (file: FileType, ctx: Context) => {
     } else if (file.type === "delete") {
       await fs.remove(file.to);
     } else if (file.type === "write") {
-      await fs.outputFile(file.to, file.content);
+      await fs.outputFile(file.to, file.content!);
     } else if (file.type === "append") {
-      await fs.appendFile(file.to, file.content);
+      await fs.appendFile(file.to, file.content!);
     }
   } else {
     if (!file.path) {
@@ -69,25 +69,34 @@ export const execFiles = async (
   );
 };
 
-export const copyTemplate = async (context: Context) => {
-  console.log();
-  const spinner = ora("Copying template files").start();
-  const templateDir = path.join(__dirname, "../..", "template");
-
-  try {
-    await fs.copy(path.join(templateDir, "base"), path.join(context.userDir));
-    await Promise.all([
-      fs.rename(
-        path.join(context.userDir, "__gitignore"),
-        path.join(context.userDir, ".gitignore")
-      ),
-    ]);
-    spinner.succeed(`Copied template files to ${context.userDir}`);
-  } catch (e) {
-    spinner.fail(`Couldn't copy template files: ${formatError(e)}`);
-    process.exit(1);
-  }
+export const renameGitIgnore = async (dir: string) => {
+  await Promise.all([
+    fs.rename(path.join(dir, "__gitignore"), path.join(dir, ".gitignore")),
+  ]);
 };
+/**
+ * Copying Base template
+ */
+export const copyDir = async (from: string, to: string) => {
+  await fs.copy(path.join(from, "base"), path.join(to));
+};
+
+export const getBaseTemplateDir = () =>
+  path.join(__dirname, "../../", "template");
 
 export const getInstallersDir = async () =>
   await fs.readdir(path.join(__dirname, "../installers"));
+
+export const updateJson = async (
+  dir: string,
+  file: `${string}.json`,
+  cb: (json: unknown) => Promise<unknown>
+) => {
+  const json = await fs.readJSON(path.join(dir, file));
+  const updatedJson = await cb({ ...json });
+  await fs.writeFile(
+    path.join(dir, file),
+    JSON.stringify(updatedJson, null, 2)
+  );
+  return updatedJson;
+};

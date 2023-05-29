@@ -1,5 +1,11 @@
 import inquirer from "inquirer";
 import type { Installers } from "~types";
+import { validateName } from "./validators";
+import { SUPPLIED_ARGS } from "./constants";
+import { exec } from "child_process";
+import { promisify } from "util";
+
+export const execa = promisify(exec);
 /**
  * Gets the supplied arguments from the user
  * @example `npm create fusion-app --example` -> --example is a supplied arg
@@ -17,6 +23,12 @@ export const getProjectNameFromSuppliedArg = (args: string[]) => {
     ?.split("pname=")
     .pop();
 };
+
+export const isCwdFromSuppliedArg = (args: string[]) =>
+  args.includes(SUPPLIED_ARGS.current);
+
+export const isSkipFromSuppliedArg = (args: string[]) =>
+  args.includes(SUPPLIED_ARGS.skip);
 
 //#region prompts
 export const shouldOverwriteDirPrompt = async () => {
@@ -38,4 +50,15 @@ export const getInstallersPrompt = async (choices: string[]) =>
       choices: choices,
     })
   ).pkgs;
+
+export const getProjectNamePrompt = async () =>
+  (
+    await inquirer.prompt<{ appName: string }>({
+      name: "appName",
+      type: "input",
+      message: "What is the name of your app?",
+      validate: validateName,
+      default: "my-fusion-app",
+    })
+  ).appName;
 //#endregion
