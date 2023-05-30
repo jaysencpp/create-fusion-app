@@ -1,4 +1,4 @@
-import { FileType, InstallerContext, UtilFunc } from "~types";
+import type { FileType, InstallerContext, UtilFunc } from "~types";
 import { execFiles } from "./fs";
 
 const appHelper = (
@@ -21,11 +21,20 @@ const appHelper = (
 const configHelper = (
   usingNav: boolean,
   usingCtx: boolean,
+  usingAgGrid: boolean,
   ctx: InstallerContext
 ) => {
   let appFileName = "";
-  if (usingNav && usingCtx) {
+  if (usingNav && usingCtx && usingAgGrid) {
+    appFileName = `with-aggrid-ctx-nav.ts`;
+  } else if (usingNav && usingCtx) {
     appFileName = `with-nav-ctx.ts`;
+  } else if (usingNav && usingAgGrid) {
+    appFileName = `with-aggrid-nav.ts`;
+  } else if (usingCtx && usingAgGrid) {
+    appFileName = `with-aggrid-ctx.ts`;
+  } else if (usingAgGrid) {
+    appFileName = `with-aggrid.ts`;
   } else if (usingCtx) {
     appFileName = `with-ctx.ts`;
   } else if (usingNav) {
@@ -43,14 +52,13 @@ export const getAppChoice: UtilFunc = (ctx) => {
 export const getConfigChoice: UtilFunc = (ctx) => {
   const usingNav = ctx.installers.includes("Routing");
   const usingCtx = ctx.installers.includes("Fusion Context");
-  return configHelper(usingNav, usingCtx, ctx);
+  const usingAgGrid = ctx.installers.includes("Ag Grid");
+  return configHelper(usingNav, usingCtx, usingAgGrid, ctx);
 };
 
 export const findAndCopyTemplates = async (ctx: InstallerContext) => {
   const app = getAppChoice(ctx);
   const config = getConfigChoice(ctx);
-  console.log("GOT APP", app);
-  console.log("GOT CONFIG", config);
   const files: FileType[] = [];
 
   if (app) {

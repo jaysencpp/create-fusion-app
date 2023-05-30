@@ -8,7 +8,12 @@ export type Context = {
   pkgManager: PkgManager;
 };
 
-export type Installers = "Fusion Context" | "Routing" | "React Query";
+export type Installers =
+  | "Fusion Context"
+  | "Routing"
+  | "React Query"
+  | "Ag Grid"
+  | "EDS";
 
 export type InstallerContext = Context & {
   installers: Installers[];

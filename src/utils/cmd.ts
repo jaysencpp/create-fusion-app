@@ -19,8 +19,8 @@ export const getSuppliedArgs = () => {
 
 export const getProjectNameFromSuppliedArg = (args: string[]) => {
   return args
-    .find((o) => o.startsWith("pname="))
-    ?.split("pname=")
+    .find((o) => o.startsWith(`${SUPPLIED_ARGS.pname}=`))
+    ?.split(`${SUPPLIED_ARGS.pname}=`)
     .pop();
 };
 
@@ -46,7 +46,7 @@ export const getInstallersPrompt = async (choices: string[]) =>
     await inquirer.prompt<{ pkgs: Installers[] }>({
       name: "pkgs",
       type: "checkbox",
-      message: "What whould we use for this app?",
+      message: "What do you want to include in this app?",
       choices: choices,
     })
   ).pkgs;

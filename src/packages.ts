@@ -1,5 +1,8 @@
 const packages = {
-  dev: {},
+  dev: {
+    //EDS/Styled components
+    "@types/styled-components": "^5.1.26",
+  },
   normal: {
     // navigation
     "@equinor/fusion-framework-module-navigation": "^2.1.2",
@@ -9,6 +12,14 @@ const packages = {
     "@equinor/fusion-framework-module-context": "^4.0.8",
     //React query
     "@tanstack/react-query": "^4.29.12",
+    // Ag grid
+    "@equinor/fusion-framework-module-ag-grid": "^29.3.1",
+    "@equinor/workspace-ag-grid": "^1.0.0",
+    // EDS
+    "@equinor/eds-core-react": "^0.30.0",
+    "@equinor/eds-icons": "^0.19.1",
+    "styled-components": "^5.3.9",
+    "react-is": "^18.2.0",
   },
 };
 export type Pkgs = typeof packages;
