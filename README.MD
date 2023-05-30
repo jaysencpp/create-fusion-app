@@ -1,7 +1,13 @@
 # Create fusion app
 CLI tool to bootstrap your new Fusion application
 
-Usage: `npm create fusion-app` soon..
+To run:
+* `pnpm install`
+* `pnpm build`
+* `pnpm test:js`
+
+Soon: 
+Usage: `npm create fusion-app`
 
 Including:
 * Ag Grid
