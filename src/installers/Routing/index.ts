@@ -8,8 +8,8 @@ const config: Installer = (ctx) => ({
       to: `${ctx.userDir}/src/Router.tsx`,
     },
     {
-      path: `${__dirname}/files/routes.txt`,
-      to: `${ctx.userDir}/src/routes.tsx`,
+      path: `${__dirname}/files/Routes.txt`,
+      to: `${ctx.userDir}/src/Routes.tsx`,
     },
   ],
   pkgs: withPackages({

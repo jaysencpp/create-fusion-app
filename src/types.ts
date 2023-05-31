@@ -1,11 +1,26 @@
 import type { ExpectedPackages } from "~packages";
 
 export type PkgManager = "npm" | "pnpm" | "yarn";
+export type AppManifest = {
+  name: string;
+  shortName: string;
+  key: string;
+  version: {
+    major: string;
+    minor: string;
+    patch: string;
+  };
+};
 export type Context = {
   userDir: string;
-  appName: string;
+  projectName: string;
   templateDir: string;
   pkgManager: PkgManager;
+  appManifest: {
+    name: string;
+    shortName: string;
+    key: string;
+  };
 };
 
 export type Installers =

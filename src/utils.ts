@@ -3,12 +3,18 @@ import path from "path";
 import chalk from "chalk";
 import {
   execa,
+  getAppKeyFromSuppliedArg,
+  getAppNameFromSuppliedArg,
+  getAppShortNameFromSuppliedArg,
+  getManifestAppKeyPrompt,
+  getManifestAppNamePrompt,
+  getManifestAppShortNamePrompt,
   getProjectNameFromSuppliedArg,
   getProjectNamePrompt,
   isCwdFromSuppliedArg,
   shouldOverwriteDirPrompt,
 } from "~utils/cmd";
-import { isPkgJson, validateName } from "~utils/validators";
+import { isAppManifest, isPkgJson, validateName } from "~utils/validators";
 import {
   copyDir,
   existsOrCreate,
@@ -33,15 +39,35 @@ const getPkgManager = () => {
 
 export const init = async (args: string[]): Promise<Context> => {
   console.log();
-  let projectName = getProjectNameFromSuppliedArg(args);
-  if (projectName && !validateName(projectName)) {
-    projectName = undefined;
+  let projectNameArg = getProjectNameFromSuppliedArg(args);
+  let appKey = getAppKeyFromSuppliedArg(args);
+  let appShortName = getAppShortNameFromSuppliedArg(args);
+  let appName = getAppNameFromSuppliedArg(args);
+
+  if (projectNameArg && !validateName(projectNameArg)) {
+    projectNameArg = undefined;
   }
 
-  const appName = projectName || (await getProjectNamePrompt());
+  if (appKey && !validateName(appKey)) {
+    appKey = undefined;
+  }
+
+  if (appShortName && !validateName(appShortName)) {
+    appShortName = undefined;
+  }
+
+  if (appName && !validateName(appName)) {
+    appName = undefined;
+  }
+
+  const projectName = projectNameArg || (await getProjectNamePrompt());
+  const manifestAppName = appName || (await getManifestAppNamePrompt());
+  const manifestAppShortName =
+    appShortName || (await getManifestAppShortNamePrompt());
+  const manifestAppKey = appKey || (await getManifestAppKeyPrompt());
 
   const isCwd = isCwdFromSuppliedArg(args);
-  const dir = path.resolve(process.cwd(), isCwd ? "" : appName);
+  const dir = path.resolve(process.cwd(), isCwd ? "" : projectName);
   const dirExists = await existsOrCreate(dir);
 
   if (dirExists && !isCwd) {
@@ -56,10 +82,15 @@ export const init = async (args: string[]): Promise<Context> => {
   const pkgManager = getPkgManager();
 
   return {
-    appName,
+    projectName,
     userDir: dir,
     pkgManager,
     templateDir: path.join(__dirname, "../template"),
+    appManifest: {
+      name: manifestAppName,
+      shortName: manifestAppShortName,
+      key: manifestAppKey,
+    },
   };
 };
 
@@ -85,12 +116,25 @@ const updatePackageJson = async (
   const [normalDeps, devModeDeps] = pkgs;
   await updateJson(ctx.userDir, "package.json", async (json) => {
     if (isPkgJson(json)) {
-      json.name = ctx.appName;
+      json.name = ctx.projectName;
       json.scripts = { ...json.scripts, ...scripts };
       json.dependencies = { ...json.dependencies, ...normalDeps };
       json.devDependencies = { ...json.devDependencies, ...devModeDeps };
       return json;
     }
+    return json;
+  });
+};
+
+const updateAppManifestJson = async (ctx: InstallerContext) => {
+  await updateJson(ctx.userDir, "app-manifest.json", async (json) => {
+    console.log("Updating manifest", ctx);
+    if (isAppManifest(json)) {
+      json.key = ctx.appManifest.key;
+      json.name = ctx.appManifest.name;
+      json.shortName = ctx.appManifest.shortName;
+    }
+
     return json;
   });
 };
@@ -105,6 +149,7 @@ export const modifyProject = async (
     await Promise.all([
       findAndCopyTemplates(ctx),
       updatePackageJson(ctx, scripts, deps),
+      updateAppManifestJson(ctx),
     ]);
     spinner.succeed("Modified project");
   } catch (e) {
@@ -139,7 +184,7 @@ export const runCommands = async (ctx: Context, commands: string[]) => {
   }
 };
 export const finish = (ctx: InstallerContext) => {
-  console.log(chalk.green(`cd ${ctx.appName}`));
+  console.log(chalk.green(`cd ${ctx.projectName}`));
   const withRun = ctx.pkgManager === "pnpm" ? "" : " run";
   console.log(chalk.bold(chalk.blue(`\t${ctx.pkgManager}${withRun} dev`)));
   console.log();

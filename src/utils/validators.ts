@@ -1,3 +1,5 @@
+import type { AppManifest } from "~types";
+
 export const validateName = (name: string) => {
   if (!name.length) return false;
   return /^(?:@[a-z0-9-*~][a-z0-9-*._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(name)
@@ -16,5 +18,14 @@ export const isPkgJson = (json: unknown): json is PkgJson => {
     (json as PkgJson)?.devDependencies !== undefined &&
     (json as PkgJson).name !== undefined &&
     (json as PkgJson).scripts !== undefined
+  );
+};
+
+export const isAppManifest = (json: unknown): json is AppManifest => {
+  return (
+    (json as AppManifest)?.name !== undefined &&
+    (json as AppManifest)?.key !== undefined &&
+    (json as AppManifest)?.shortName !== undefined &&
+    (json as AppManifest)?.version !== undefined
   );
 };

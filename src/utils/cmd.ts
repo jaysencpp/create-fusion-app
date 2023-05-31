@@ -16,13 +16,23 @@ export const getSuppliedArgs = () => {
     .filter((arg) => arg.startsWith("--"))
     .map((arg) => arg.slice(2).toLowerCase());
 };
-
-export const getProjectNameFromSuppliedArg = (args: string[]) => {
-  return args
-    .find((o) => o.startsWith(`${SUPPLIED_ARGS.pname}=`))
-    ?.split(`${SUPPLIED_ARGS.pname}=`)
+const getSuppliedArg = (
+  args: string[],
+  argToLookFor: keyof typeof SUPPLIED_ARGS
+) =>
+  args
+    .find((o) => o.startsWith(`${argToLookFor}=`))
+    ?.split(`${argToLookFor}=`)
     .pop();
-};
+
+export const getProjectNameFromSuppliedArg = (args: string[]) =>
+  getSuppliedArg(args, SUPPLIED_ARGS.pname);
+export const getAppNameFromSuppliedArg = (args: string[]) =>
+  getSuppliedArg(args, SUPPLIED_ARGS.appname);
+export const getAppKeyFromSuppliedArg = (args: string[]) =>
+  getSuppliedArg(args, SUPPLIED_ARGS.key);
+export const getAppShortNameFromSuppliedArg = (args: string[]) =>
+  getSuppliedArg(args, SUPPLIED_ARGS.shortname);
 
 export const isCwdFromSuppliedArg = (args: string[]) =>
   args.includes(SUPPLIED_ARGS.current);
@@ -56,9 +66,39 @@ export const getProjectNamePrompt = async () =>
     await inquirer.prompt<{ appName: string }>({
       name: "appName",
       type: "input",
-      message: "What is the name of your app?",
+      message: "What is the name of your project?",
       validate: validateName,
       default: "my-fusion-app",
     })
   ).appName;
+
+export const getManifestAppNamePrompt = async () =>
+  (
+    await inquirer.prompt<{ manifestAppName: string }>({
+      name: "manifestAppName",
+      type: "input",
+      message: "(Manifest) - What is the display name for the app?",
+      validate: validateName,
+    })
+  ).manifestAppName;
+
+export const getManifestAppShortNamePrompt = async () =>
+  (
+    await inquirer.prompt<{ manifestAppShortName: string }>({
+      name: "manifestAppShortName",
+      type: "input",
+      message: "(Manifest) - What is the shortname for the app?",
+      validate: validateName,
+    })
+  ).manifestAppShortName;
+
+export const getManifestAppKeyPrompt = async () =>
+  (
+    await inquirer.prompt<{ manifestAppKey: string }>({
+      name: "manifestAppKey",
+      type: "input",
+      message: "(Manifest) - What is the key for the app?",
+      validate: validateName,
+    })
+  ).manifestAppKey;
 //#endregion
