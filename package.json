@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc -p . && tsc-alias -p tsconfig.json && pnpm postbuild",
     "postbuild": "ts-node -r tsconfig-paths/register scripts/copyFiles",
-    "dev": "npm link && cd dist && npm link create-fusion-app",
+    "dev": "npm link && cd dist && npm link create-jaysencpp-app",
     "test:ts": "ts-node -r tsconfig-paths/register src",
     "test:js": "node dist/index.js"
   },
@@ -16,7 +16,7 @@
     "template"
   ],
   "bin": {
-    "create-fusion-app": "dist/index.js"
+    "create-jaysencpp-app": "dist/index.js"
   },
   "author": "",
   "license": "ISC",
