@@ -78,7 +78,7 @@ export const getManifestAppNamePrompt = async () =>
       name: "manifestAppName",
       type: "input",
       message: "(Manifest) - What is the display name for the app?",
-      validate: validateName,
+      // validate: validateName,
     })
   ).manifestAppName;
 
@@ -88,7 +88,7 @@ export const getManifestAppShortNamePrompt = async () =>
       name: "manifestAppShortName",
       type: "input",
       message: "(Manifest) - What is the shortname for the app?",
-      validate: validateName,
+      // validate: validateName,
     })
   ).manifestAppShortName;
 
