@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Create a Fusion app",
   "main": "dist/index.js",
+  "private": false,
   "scripts": {
     "build": "rm -rf dist && tsc -p . && tsc-alias -p tsconfig.json && pnpm postbuild",
     "postbuild": "ts-node -r tsconfig-paths/register scripts/copyFiles",
