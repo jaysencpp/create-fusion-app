@@ -6,7 +6,7 @@ To run:
 * `pnpm build`
 * `pnpm test:js`
 
-Soon:  `npm create fusion-app`
+Usage:  `npm create fusion-app@latest`
 
 Including:
 * Ag Grid
