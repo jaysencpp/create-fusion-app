@@ -6,7 +6,7 @@ To run:
 * `pnpm build`
 * `pnpm test:js`
 
-Usage:  `npm create fusion-app@latest`
+Usage:  `npm create jaysencpp-app@latest`
 
 Including:
 * Ag Grid
